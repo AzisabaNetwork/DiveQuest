@@ -1,0 +1,19 @@
+Mob-1:
+  mobName: str
+Story-1:
+  npc: 2
+Item-1:
+  itemId: 100
+  title: 遺物の入手
+  layer: 1
+  text:
+    - この遺物は使える
+  reward:
+    exp: 10
+    bless: 0.2
+    item: 300,1
+    message:
+      - おめでとう！！！！！！！！！！！！！！！
+      - !!!!!!!!!!!!!!!!!
+      - !!!!!!!!!
+      - start-Mob-1

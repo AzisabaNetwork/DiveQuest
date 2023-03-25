@@ -1,0 +1,21 @@
+name: DiveQuest
+version: ${project.version}
+main: com.flora30.divequest.DiveQuest
+api-version: 1.13
+depend: [ DiveAPI,Citizens,MythicMobs,ProtocolLib ]
+loadbefore: [DiveRegion]
+commands:
+  mission:
+    permission-message: Unknown command. Type "/help" for help.
+    permission: divequest.*
+  sty:
+    permission-message: Unknown command. Type "/help" for help.
+    permission: divequest.story
+  diveNpc:
+    permission-message: Unknown command. Type "/help" for help.
+    permission: divequest.*
+permissions:
+  divequest.*:
+    default: op
+  divequest.story:
+    default: true

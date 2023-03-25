@@ -1,0 +1,22 @@
+#text [表示する文]
+#delay [tick]
+#loop
+#give [アイテムID] [数]
+#missionComplete [ミッションID]
+#missionStart [ミッションID]
+#checkMission [ミッションID] [失敗した文]
+#checkOther [NPCID] [進み具合の数値] [失敗した文]
+1:
+  name: やばし
+  talkLine:
+    1:
+      - text ヤバくね？
+      - delay 5
+      - text それでさ
+    2:
+      -
+      -
+    3:
+      -
+      -
+      - checkOther 15 3 フェルに聞いてきて？
