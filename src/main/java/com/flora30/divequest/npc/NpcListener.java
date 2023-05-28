@@ -1,8 +1,7 @@
 package com.flora30.divequest.npc;
 
-import com.flora30.diveapi.data.PlayerData;
-import com.flora30.diveapi.data.player.NpcData;
-import com.flora30.diveapi.plugins.CoreAPI;
+import com.flora30.divelib.data.player.PlayerData;
+import com.flora30.divelib.data.player.PlayerDataObject;
 import com.flora30.divequest.DiveQuest;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCCreateEvent;
@@ -27,13 +26,13 @@ public class NpcListener {
                     player.sendMessage("プレイヤーが見つかりません");
                     return;
                 }
-                PlayerData data = CoreAPI.getPlayerData(target.getUniqueId());
+                PlayerData data = PlayerDataObject.INSTANCE.getPlayerDataMap().get(target.getUniqueId());
                 if (data == null){
                     player.sendMessage("プレイヤーデータが見つかりません");
                     return;
                 }
 
-                Map<Integer,Integer> map = data.npcData.talkProgressMap;
+                Map<Integer,Integer> map = data.getNpcData().getTalkProgressMap();
                 map.clear();
                 player.sendMessage(command2 + "の会話データを削除しました");
         }

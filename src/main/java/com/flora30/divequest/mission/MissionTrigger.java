@@ -1,6 +1,5 @@
 package com.flora30.divequest.mission;
 
-import com.flora30.diveapi.plugins.CoreAPI;
 import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicMobDeathEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

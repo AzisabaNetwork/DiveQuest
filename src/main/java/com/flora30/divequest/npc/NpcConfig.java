@@ -1,8 +1,8 @@
 package com.flora30.divequest.npc;
 
-import com.flora30.diveapi.tools.Config;
+import com.flora30.diveconstant.data.talk.*;
+import com.flora30.divelib.util.Config;
 import com.flora30.divequest.DiveQuest;
-import com.flora30.divequest.npc.talk.*;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -10,6 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class NpcConfig extends Config {
                 }
                 //name
                 String name = file2.getString(key+".name");
-                NPC npc = new NPC(npcID,name);
+                NPC npc = new NPC(npcID,name,new ArrayList<>());
 
                 //talkLineの読み込み
                 ConfigurationSection talkLineSection = file2.getConfigurationSection(key+".talkLine");
@@ -69,8 +70,8 @@ public class NpcConfig extends Config {
                     }
                     List<String> talkStringList = talkLineSection.getStringList(key2);
                     //talkLineを自動生成する
-                    TalkLine talks = generateTalkLine(name,key2,talkStringList);
-                    npc.addLine(talks);
+                    List<Talk> talks = generateTalkLine(name,key2,talkStringList);
+                    npc.getTalks().add(talks);
                 }
 
                 NpcMain.setNPC(npcID,npc);
@@ -86,8 +87,8 @@ public class NpcConfig extends Config {
     }
 
 
-    private TalkLine generateTalkLine(String name, String n, List<String> loadedList){
-        TalkLine generatedLine = new TalkLine();
+    private List<Talk> generateTalkLine(String name, String n, List<String> loadedList){
+        List<Talk> generatedLine = new ArrayList<>();
         for(String key : loadedList){
             List<String> separatedKeys = Arrays.asList(key.split(" "));
             //type分岐
@@ -96,45 +97,47 @@ public class NpcConfig extends Config {
                     case Give -> {
                         int itemID = Integer.parseInt(separatedKeys.get(1));
                         int amount = Integer.parseInt(separatedKeys.get(2));
-                        generatedLine.addTalk(new TalkGiveItem(itemID, amount));
+                        generatedLine.add(new TalkGiveItem(itemID, amount));
                     }
                     case Loop -> {
                         if (separatedKeys.size() >= 2) {
-                            generatedLine.addTalk(new TalkLoop(Integer.parseInt(separatedKeys.get(1))));
+                            generatedLine.add(new TalkLoop(Integer.parseInt(separatedKeys.get(1))));
                         }
                         else {
-                            generatedLine.addTalk(new TalkLoop(1));
+                            generatedLine.add(new TalkLoop(1));
                         }
                     }
                     case Text -> {
                         String str = separatedKeys.get(1);
-                        generatedLine.addTalk(new TalkText(str));
+                        generatedLine.add(new TalkText(str));
                     }
-                    case Delay -> generatedLine.addTalk(new TalkDelay());
+                    case Delay -> generatedLine.add(new TalkDelay());
+                    /*
                     case MissionStart -> {
                         String type = separatedKeys.get(1);
                         int id = Integer.parseInt(separatedKeys.get(2));
                         generatedLine.addTalk(new TalkMissionStart(type, id));
                     }
+                     */
                     case CheckOther -> {
                         int loadID = Integer.parseInt(separatedKeys.get(1));
                         int progress = Integer.parseInt(separatedKeys.get(2));
                         String failed = separatedKeys.get(3);
-                        generatedLine.addTalk(new CheckOtherProgress(failed, loadID, progress));
+                        generatedLine.add(new CheckOther(loadID, progress, failed));
                     }
                     case Money -> {
                         int money = Integer.parseInt(separatedKeys.get(1));
-                        generatedLine.addTalk(new TalkMoney(money));
+                        generatedLine.add(new TalkMoney(money));
                     }
                     case Help -> {
                         int helpId = Integer.parseInt(separatedKeys.get(1));
-                        generatedLine.addTalk(new TalkHelp(helpId));
+                        generatedLine.add(new TalkHelp(helpId));
                     }
                     case Shop -> {
                         int shopId = Integer.parseInt(separatedKeys.get(1));
-                        generatedLine.addTalk(new TalkShop(shopId));
+                        generatedLine.add(new TalkShop(shopId));
                     }
-                    case Whistle -> generatedLine.addTalk(new TalkWhistle());
+                    case Whistle -> generatedLine.add(new TalkWhistle());
                 }
             } catch (IllegalArgumentException|IndexOutOfBoundsException|NullPointerException e){
                 Bukkit.getLogger().info("[DiveCore-Npc]「"+name+"」の"+n+"回目会話「"+key+"」の取得に失敗しました");

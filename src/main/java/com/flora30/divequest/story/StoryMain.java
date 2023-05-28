@@ -1,9 +1,9 @@
 package com.flora30.divequest.story;
 
-import com.flora30.diveapi.DiveAPI;
-import com.flora30.diveapi.data.PlayerData;
-import com.flora30.diveapi.data.Story;
-import com.flora30.diveapi.plugins.CoreAPI;
+import com.flora30.diveconstant.data.LayerObject;
+import com.flora30.divelib.DiveLib;
+import com.flora30.divelib.data.player.PlayerData;
+import com.flora30.divelib.data.player.PlayerDataObject;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -15,20 +15,17 @@ import java.util.Map;
 
 public class StoryMain {
 
-    //string = layerName
-    private static final Map<String, Story> storyMap = new HashMap<>();
-
     public static void play(Player player){
-        PlayerData data = CoreAPI.getPlayerData(player.getUniqueId());
-        if (data == null || data.layerData.layer == null) {
+        PlayerData data = PlayerDataObject.INSTANCE.getPlayerDataMap().get(player.getUniqueId());
+        if (data == null || data.getLayerData().getLayer() == null) {
             Bukkit.getLogger().info("[DiveCore-Story]データ待ち : "+player.getDisplayName());
-            DiveAPI.plugin.delayedTask(3, () -> {
+            DiveLib.plugin.delayedTask(3, () -> {
                 play(player);
             });
             return;
         }
-        String layer = data.layerData.layer;
-        storyMap.get(layer).play(player);
+        String layer = data.getLayerData().getLayer();
+        LayerObject.INSTANCE.getLayerMap().get(layer).getStory().play(player);
     }
 
     public static void skip(Player player){
@@ -45,29 +42,21 @@ public class StoryMain {
     }
 
     public static void playTitle(Player player){
-        PlayerData data = CoreAPI.getPlayerData(player.getUniqueId());
-        if (data == null || data.layerData.layer == null) {
+        PlayerData data = PlayerDataObject.INSTANCE.getPlayerDataMap().get(player.getUniqueId());
+        if (data == null || data.getLayerData().getLayer() == null) {
             Bukkit.getLogger().info("[DiveCore-Story]データ待ち : " + player.getDisplayName());
-            DiveAPI.plugin.delayedTask(3, () -> {
+            DiveLib.plugin.delayedTask(3, () -> {
                 playTitle(player);
             });
             return;
         }
 
-        String layerName = data.layerData.layer;
-        boolean noticeDisplay = StoryMain.getStory(layerName).noticeDisplay;
+        String layerName = data.getLayerData().getLayer();
+        boolean noticeDisplay = LayerObject.INSTANCE.getLayerMap().get(layerName).getStory().getNoticeDisplay();
         if (noticeDisplay){
-            String displayName = StoryMain.getStory(layerName).displayName;
-            String displaySub = StoryMain.getStory(layerName).displaySub;
+            String displayName = LayerObject.INSTANCE.getLayerMap().get(layerName).getDisplayName();
+            String displaySub = LayerObject.INSTANCE.getLayerMap().get(layerName).getStory().getDisplaySub();
             player.sendTitle(displayName,displaySub,5,40,10);
         }
-    }
-
-    public static void putStory(String layer, Story story){
-        storyMap.put(layer,story);
-    }
-
-    public static Story getStory(String layer){
-        return storyMap.get(layer);
     }
 }

@@ -1,7 +1,7 @@
 package com.flora30.divequest;
 
 import com.comphenix.protocol.ProtocolLibrary;
-import com.flora30.diveapi.DiveAPI;
+import com.flora30.divelib.DiveLib;
 import com.flora30.divequest.mission.MissionConfig;
 import com.flora30.divequest.npc.NpcConfig;
 import org.bukkit.Bukkit;
@@ -34,7 +34,7 @@ public final class DiveQuest extends JavaPlugin {
         // イベントと Listener を紐づける
         getServer().getPluginManager().registerEvents(listeners, this);
         ProtocolLibrary.getProtocolManager().addPacketListener(new ChatListener());
-        DiveAPI.questEventReady = true;
+        DiveLib.plugin.setQuestEventReady(true);
 
         // 設定ファイルをロードする
         loadConfig();

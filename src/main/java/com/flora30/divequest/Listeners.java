@@ -1,7 +1,6 @@
 package com.flora30.divequest;
 
-import com.flora30.diveapi.event.LayerChangeEvent;
-import com.flora30.diveapi.event.LayerLoadEvent;
+import com.flora30.divelib.event.LayerChangeEvent;
 import com.flora30.divequest.mission.MissionMain;
 import com.flora30.divequest.mission.MissionTrigger;
 import com.flora30.divequest.npc.NpcListener;
@@ -55,11 +54,6 @@ public class Listeners implements Listener, CommandExecutor {
             }
         }
         return false;
-    }
-
-    @EventHandler
-    public void onLayerLoad(LayerLoadEvent e){
-        StoryListener.onLayerLoad(e);
     }
 
     @EventHandler

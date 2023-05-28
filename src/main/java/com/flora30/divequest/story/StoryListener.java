@@ -1,31 +1,26 @@
 package com.flora30.divequest.story;
 
-import com.flora30.diveapi.data.player.LayerData;
-import com.flora30.diveapi.event.LayerChangeEvent;
-import com.flora30.diveapi.event.LayerLoadEvent;
-import com.flora30.diveapi.plugins.CoreAPI;
+import com.flora30.divelib.data.player.LayerData;
+import com.flora30.divelib.data.player.PlayerDataObject;
+import com.flora30.divelib.event.LayerChangeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class StoryListener {
-
-    public static void onLayerLoad(LayerLoadEvent e){
-        StoryConfig.load(e.getKey(), e.getSection());
-    }
 
     public static void onLayerChange(LayerChangeEvent e){
         Player player = Bukkit.getPlayer(e.getUuid());
         if (player == null){
             return;
         }
-        LayerData data = CoreAPI.getPlayerData(e.getUuid()).layerData;
+        LayerData data = PlayerDataObject.INSTANCE.getPlayerDataMap().get(e.getUuid()).getLayerData();
         StoryMain.playTitle(player);
         // ログなのでCO
         //for (String visited : data.visitedLayers){
         //    Bukkit.getLogger().info("visited : "+visited);
         //}
         //Bukkit.getLogger().info("次の階層："+e.getNextLayer());
-        if (data.visitedLayers.contains(e.getNextLayer())){
+        if (data.getVisitedLayers().contains(e.getNextLayer())){
             //既に訪れていたとき
             StoryMain.skip(player);
         }
