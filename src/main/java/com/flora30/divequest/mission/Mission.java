@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Mission extends com.flora30.diveapi.data.Mission {
+public class Mission {
+    public String title;
+    public String layer;
+    public List<String> text = new ArrayList<>();
 
     public Reward reward;
 }

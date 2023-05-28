@@ -1,9 +1,11 @@
 package com.flora30.divequest.mission;
 
 
-import com.flora30.divequest.npc.TalkLine;
+import com.flora30.diveconstant.data.talk.Talk;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Reward {
@@ -12,13 +14,13 @@ public class Reward {
     private int money = 0;
     //ItemID/個数
     private Map<Integer,Integer> itemMap = new HashMap<>();
-    private TalkLine line = new TalkLine();
+    private List<Talk> line = new ArrayList<>();
 
-    public TalkLine getLine() {
+    public List<Talk> getLine() {
         return line;
     }
 
-    public void setLine(TalkLine line) {
+    public void setLine(List<Talk> line) {
         this.line = line;
     }
 

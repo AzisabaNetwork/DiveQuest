@@ -1,18 +1,17 @@
 package com.flora30.divequest.mission;
 
-import com.flora30.diveapi.DiveAPI;
-import com.flora30.diveapi.data.PlayerData;
-import com.flora30.diveapi.data.player.NpcData;
-import com.flora30.diveapi.plugins.CoreAPI;
-import com.flora30.diveapi.plugins.ItemAPI;
-import com.flora30.diveapi.plugins.RegionAPI;
+import com.flora30.diveconstant.data.LayerObject;
+import com.flora30.diveconstant.data.talk.Check;
+import com.flora30.diveconstant.data.talk.Talk;
+import com.flora30.diveconstant.data.talk.TalkDelay;
+import com.flora30.divelib.DiveLib;
+import com.flora30.divelib.ItemMain;
+import com.flora30.divelib.data.player.NpcData;
+import com.flora30.divelib.data.player.PlayerData;
+import com.flora30.divelib.data.player.PlayerDataObject;
 import com.flora30.divequest.mission.Type.ItemMission;
 import com.flora30.divequest.mission.Type.MobMission;
 import com.flora30.divequest.mission.Type.StoryMission;
-import com.flora30.divequest.npc.TalkLine;
-import com.flora30.divequest.npc.talk.Check;
-import com.flora30.divequest.npc.talk.Talk;
-import com.flora30.divequest.npc.talk.TalkDelay;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
@@ -34,12 +33,9 @@ public class MissionMain {
     public final static List<ItemMission> itemMissions = new ArrayList<>();
 
     public static void onKillMob(Player player, String mobName){
-        NpcData data = CoreAPI.getPlayerData(player.getUniqueId()).npcData;
-        if (data == null){
-            return;
-        }
+        NpcData data = PlayerDataObject.INSTANCE.getPlayerDataMap().get(player.getUniqueId()).getNpcData();
 
-        int id = data.mobMissionId;
+        int id = data.getMobMissionId();
 
         if (id == -1){
             return;
@@ -50,13 +46,13 @@ public class MissionMain {
     }
 
     public static void onGetItem(Player player, ItemStack item){
-        NpcData data = CoreAPI.getPlayerData(player.getUniqueId()).npcData;
+        NpcData data = PlayerDataObject.INSTANCE.getPlayerDataMap().get(player.getUniqueId()).getNpcData();
         if (data == null){
             return;
         }
 
-        int itemId = ItemAPI.getItemID(item);
-        int id = data.itemMissionId;
+        int itemId = ItemMain.INSTANCE.getItemId(item);
+        int id = data.getItemMissionId();
 
         if (id == -1){
             return;
@@ -67,12 +63,12 @@ public class MissionMain {
     }
 
     public static void onTalkNPC(Player player, int npcId){
-        NpcData data = CoreAPI.getPlayerData(player.getUniqueId()).npcData;
+        NpcData data = PlayerDataObject.INSTANCE.getPlayerDataMap().get(player.getUniqueId()).getNpcData();
         if (data == null){
             return;
         }
 
-        int id = data.storyMissionId;
+        int id = data.getStoryMissionId();
 
         if (id == -1){
             return;
@@ -96,7 +92,7 @@ public class MissionMain {
         Mission mission = getMission(type, id);
         assert mission != null;
         //コンプリート処理
-        NpcData data = CoreAPI.getPlayerData(player.getUniqueId()).npcData;
+        NpcData data = PlayerDataObject.INSTANCE.getPlayerDataMap().get(player.getUniqueId()).getNpcData();
         data.setMissionId(type, -1);
 
         //報酬説明のメッセージ
@@ -119,14 +115,15 @@ public class MissionMain {
         //祝福pt
         //お金
         if (reward.getMoney() > 0){
-            CoreAPI.getPlayerData(player.getUniqueId()).money += reward.getMoney();
+            PlayerData moneyData = PlayerDataObject.INSTANCE.getPlayerDataMap().get(player.getUniqueId());
+            moneyData.setMoney(moneyData.getMoney()+reward.getMoney());
             rewardInfoList.add(2,ChatColor.WHITE+"+"+reward.getMoney()+"G");
         }
 
         //アイテム
         Map<Integer,Integer> itemMap = reward.getItemMap();
         for (int itemId : itemMap.keySet()){
-            ItemStack item = ItemAPI.getItem(itemId);
+            ItemStack item = ItemMain.INSTANCE.getItem(itemId);
             item.setAmount(itemMap.get(itemId));
             player.getInventory().addItem(item);
 
@@ -144,20 +141,20 @@ public class MissionMain {
         talk(player, reward.getLine());
     }
 
-    public static void talk(Player player, TalkLine talkLine){
+    public static void talk(Player player, List<Talk> talkLine){
         Bukkit.getLogger().info("報酬talk開始");
         if (talkLine == null){
             Bukkit.getLogger().info("talklineなし");
             return;
         }
-        NpcData data = CoreAPI.getPlayerData(player.getUniqueId()).npcData;
-        data.isTalking = true;
+        NpcData data = PlayerDataObject.INSTANCE.getPlayerDataMap().get(player.getUniqueId()).getNpcData();
+        data.setTalking(true);
 
         //delayTime：遅らせるtick数
-        int delaySetting = data.talkDelay;
+        int delaySetting = data.getTalkDelay();
         int delayTime = 0;
         //会話を行う処理をサーバーに投げる
-        for (Talk talk : talkLine.getTimeline()){
+        for (Talk talk : talkLine){
             if(talk instanceof TalkDelay){
                 delayTime += delaySetting;
                 continue;
@@ -175,27 +172,27 @@ public class MissionMain {
                 */
                 continue;
             }
-            DiveAPI.plugin.delayedTask(delayTime,() -> {
-                talk.doTalk(player,null);
+            DiveLib.plugin.delayedTask(delayTime,() -> {
+                //talk.talk(player,null); null非許容になってるけど「現状Missionを使ってない」のでco
             });
         }
 
         //会話を終了するときの処理
-        DiveAPI.plugin.delayedTask(delayTime,() -> {
+        DiveLib.plugin.delayedTask(delayTime,() -> {
             //会話を終了する
-            data.isTalking = (false);
+            data.setTalking(false);
         });
 
         Bukkit.getLogger().info("talkline最終カウント："+delayTime);
     }
 
     public static boolean setCompass(Player player){
-        PlayerData data = CoreAPI.getPlayerData(player.getUniqueId());
+        PlayerData data = PlayerDataObject.INSTANCE.getPlayerDataMap().get(player.getUniqueId());
         if (data == null){
             return false;
         }
 
-        int npcMissionId = data.npcData.storyMissionId;
+        int npcMissionId = data.getNpcData().getStoryMissionId();
         Mission mission = MissionMain.getMission("Story",npcMissionId);
         if (!(mission instanceof StoryMission)){
             return false;
@@ -212,8 +209,8 @@ public class MissionMain {
         Location target = npc.getStoredLocation();
         Location from = player.getLocation();
 
-        String targetLayer = RegionAPI.getLayerName(target);
-        String fromLayer = RegionAPI.getLayerName(from);
+        String targetLayer = LayerObject.INSTANCE.getLayerName(target);
+        String fromLayer = LayerObject.INSTANCE.getLayerName(from);
         if (targetLayer == null || !targetLayer.equals(fromLayer)){
             return false;
         }
@@ -244,25 +241,21 @@ public class MissionMain {
             Bukkit.getLogger().info("[DiveCore-Mission] "+type+" - "+id+"はnullのため受注しませんでした");
             return;
         }
-        NpcData data = CoreAPI.getPlayerData(player.getUniqueId()).npcData;
-        switch (type){
-            case "Story":
-                data.storyMissionId = (id);
-                break;
-            case "Mob":
-                data.mobMissionId = (id);
-                break;
-            case "Item":
-                data.itemMissionId = (id);
-                break;
-            default:return;
+        NpcData data = PlayerDataObject.INSTANCE.getPlayerDataMap().get(player.getUniqueId()).getNpcData();
+        switch (type) {
+            case "Story" -> data.setStoryMissionId(id);
+            case "Mob" -> data.setMobMissionId(id);
+            case "Item" -> data.setItemMissionId(id);
+            default -> {
+                return;
+            }
         }
         String title = mission.title;
         player.sendMessage(ChatColor.GREEN+"ミッション「"+title+ChatColor.GREEN+"」を開始しました");
         //音
         player.playSound(player.getLocation(), Sound.ITEM_LODESTONE_COMPASS_LOCK, 1, (float) 1.2);
-        DiveAPI.plugin.delayedTask(2, () -> player.playSound(player.getLocation(), Sound.ITEM_LODESTONE_COMPASS_LOCK, 1, (float) 1.0));
-        DiveAPI.plugin.delayedTask(4, () -> player.playSound(player.getLocation(), Sound.ITEM_LODESTONE_COMPASS_LOCK, 1, (float) 0.6));
+        DiveLib.plugin.delayedTask(2, () -> player.playSound(player.getLocation(), Sound.ITEM_LODESTONE_COMPASS_LOCK, 1, (float) 1.0));
+        DiveLib.plugin.delayedTask(4, () -> player.playSound(player.getLocation(), Sound.ITEM_LODESTONE_COMPASS_LOCK, 1, (float) 0.6));
     }
 
     public static void setStoryMission(int id, StoryMission mission){

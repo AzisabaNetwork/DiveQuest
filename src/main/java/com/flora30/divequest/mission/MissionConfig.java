@@ -1,12 +1,11 @@
 package com.flora30.divequest.mission;
 
-import com.flora30.diveapi.tools.Config;
+import com.flora30.diveconstant.data.talk.*;
+import com.flora30.divelib.util.Config;
 import com.flora30.divequest.DiveQuest;
 import com.flora30.divequest.mission.Type.ItemMission;
 import com.flora30.divequest.mission.Type.MobMission;
 import com.flora30.divequest.mission.Type.StoryMission;
-import com.flora30.divequest.npc.TalkLine;
-import com.flora30.divequest.npc.talk.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -169,11 +168,11 @@ public class MissionConfig extends Config {
         return ChatColor.translateAlternateColorCodes('&',str);
     }
 
-    private TalkLine generateTalkLine(List<String> loadedList, String wholeId){
+    private List<Talk> generateTalkLine(List<String> loadedList, String wholeId){
         if (loadedList == null){
             return null;
         }
-        TalkLine generatedLine = new TalkLine();
+        List<Talk> generatedLine = new ArrayList<>();
         for(String key : loadedList){
             List<String> separatedKeys = Arrays.asList(key.split(" "));
             //type分岐
@@ -182,45 +181,47 @@ public class MissionConfig extends Config {
                     case Give -> {
                         int itemID = Integer.parseInt(separatedKeys.get(1));
                         int amount = Integer.parseInt(separatedKeys.get(2));
-                        generatedLine.addTalk(new TalkGiveItem(itemID, amount));
+                        generatedLine.add(new TalkGiveItem(itemID, amount));
                     }
                     case Loop -> {
                         if (separatedKeys.size() >= 2) {
-                            generatedLine.addTalk(new TalkLoop(Integer.parseInt(separatedKeys.get(1))));
+                            generatedLine.add(new TalkLoop(Integer.parseInt(separatedKeys.get(1))));
                         }
                         else {
-                            generatedLine.addTalk(new TalkLoop(1));
+                            generatedLine.add(new TalkLoop(1));
                         }
                     }
                     case Text -> {
                         String str = separatedKeys.get(1);
-                        generatedLine.addTalk(new TalkText(str));
+                        generatedLine.add(new TalkText(str));
                     }
                     case Delay -> {
-                        generatedLine.addTalk(new TalkDelay());
+                        generatedLine.add(new TalkDelay());
                     }
+                    /*
                     case MissionStart -> {
                         String type = separatedKeys.get(1);
                         int id = Integer.parseInt(separatedKeys.get(2));
                         generatedLine.addTalk(new TalkMissionStart(type, id));
                     }
+                     */
                     case CheckOther -> {
                         int loadID = Integer.parseInt(separatedKeys.get(1));
                         int progress = Integer.parseInt(separatedKeys.get(2));
                         String failed = separatedKeys.get(3);
-                        generatedLine.addTalk(new CheckOtherProgress(failed, loadID, progress));
+                        generatedLine.add(new CheckOther(loadID, progress, failed));
                     }
                     case Money -> {
                         int money = Integer.parseInt(separatedKeys.get(1));
-                        generatedLine.addTalk(new TalkMoney(money));
+                        generatedLine.add(new TalkMoney(money));
                     }
                     case Help -> {
                         int helpId = Integer.parseInt(separatedKeys.get(1));
-                        generatedLine.addTalk(new TalkHelp(helpId));
+                        generatedLine.add(new TalkHelp(helpId));
                     }
                     case Shop -> {
                         int shopId = Integer.parseInt(separatedKeys.get(1));
-                        generatedLine.addTalk(new TalkShop(shopId));
+                        generatedLine.add(new TalkShop(shopId));
                     }
                 }
             } catch (IllegalArgumentException|IndexOutOfBoundsException|NullPointerException e){
