@@ -9,6 +9,7 @@ import com.flora30.divelib.ItemMain;
 import com.flora30.divelib.data.player.NpcData;
 import com.flora30.divelib.data.player.PlayerData;
 import com.flora30.divelib.data.player.PlayerDataObject;
+import com.flora30.divelib.event.AddExpEvent;
 import com.flora30.divequest.mission.Type.ItemMission;
 import com.flora30.divequest.mission.Type.MobMission;
 import com.flora30.divequest.mission.Type.StoryMission;
@@ -109,7 +110,7 @@ public class MissionMain {
         //報酬をあげる
         Reward reward = mission.reward;
         if (reward.getExp() > 0){
-            CoreAPI.addExp(player, reward.getExp());
+            Bukkit.getPluginManager().callEvent(new AddExpEvent(player, reward.getExp()));
             rewardInfoList.add(2,ChatColor.WHITE+"+"+reward.getExp()+"Exp");
         }
         //祝福pt
@@ -217,7 +218,7 @@ public class MissionMain {
 
         player.setCompassTarget(target);
 
-        ItemStack compassItem = CoreAPI.getMenuIcon(player);
+        ItemStack compassItem = player.getInventory().getItem(8);
         if (compassItem == null || compassItem.getItemMeta() == null){
             return false;
         }
