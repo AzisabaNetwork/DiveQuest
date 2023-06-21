@@ -1,6 +1,6 @@
 package com.flora30.divequest.story;
 
-import com.flora30.diveconstant.data.LayerObject;
+import com.flora30.divelib.data.LayerObject;
 import com.flora30.divelib.DiveLib;
 import com.flora30.divelib.data.player.PlayerData;
 import com.flora30.divelib.data.player.PlayerDataObject;

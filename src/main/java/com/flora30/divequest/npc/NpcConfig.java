@@ -1,6 +1,7 @@
 package com.flora30.divequest.npc;
 
-import com.flora30.diveconstant.data.talk.*;
+import com.flora30.divelib.data.talk.*;
+import com.flora30.divelib.event.HelpType;
 import com.flora30.divelib.util.Config;
 import com.flora30.divequest.DiveQuest;
 import org.bukkit.Bukkit;
@@ -130,8 +131,8 @@ public class NpcConfig extends Config {
                         generatedLine.add(new TalkMoney(money));
                     }
                     case Help -> {
-                        int helpId = Integer.parseInt(separatedKeys.get(1));
-                        generatedLine.add(new TalkHelp(helpId));
+                        HelpType type = HelpType.valueOf(separatedKeys.get(1));
+                        generatedLine.add(new TalkHelp(type));
                     }
                     case Shop -> {
                         int shopId = Integer.parseInt(separatedKeys.get(1));

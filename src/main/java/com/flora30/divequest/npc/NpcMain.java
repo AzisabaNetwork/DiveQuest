@@ -2,7 +2,7 @@ package com.flora30.divequest.npc;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
-import com.flora30.diveconstant.data.talk.*;
+import com.flora30.divelib.data.talk.*;
 import com.flora30.divelib.DiveLib;
 import com.flora30.divelib.data.player.NpcData;
 import com.flora30.divelib.data.player.PlayerDataObject;

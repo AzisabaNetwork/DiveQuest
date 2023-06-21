@@ -1,6 +1,7 @@
 package com.flora30.divequest.mission;
 
-import com.flora30.diveconstant.data.talk.*;
+import com.flora30.divelib.data.talk.*;
+import com.flora30.divelib.event.HelpType;
 import com.flora30.divelib.util.Config;
 import com.flora30.divequest.DiveQuest;
 import com.flora30.divequest.mission.Type.ItemMission;
@@ -216,8 +217,8 @@ public class MissionConfig extends Config {
                         generatedLine.add(new TalkMoney(money));
                     }
                     case Help -> {
-                        int helpId = Integer.parseInt(separatedKeys.get(1));
-                        generatedLine.add(new TalkHelp(helpId));
+                        HelpType type = HelpType.valueOf(separatedKeys.get(1));
+                        generatedLine.add(new TalkHelp(type));
                     }
                     case Shop -> {
                         int shopId = Integer.parseInt(separatedKeys.get(1));

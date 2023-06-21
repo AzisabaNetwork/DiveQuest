@@ -1,9 +1,9 @@
 package com.flora30.divequest.mission;
 
-import com.flora30.diveconstant.data.LayerObject;
-import com.flora30.diveconstant.data.talk.Check;
-import com.flora30.diveconstant.data.talk.Talk;
-import com.flora30.diveconstant.data.talk.TalkDelay;
+import com.flora30.divelib.data.LayerObject;
+import com.flora30.divelib.data.talk.Check;
+import com.flora30.divelib.data.talk.Talk;
+import com.flora30.divelib.data.talk.TalkDelay;
 import com.flora30.divelib.DiveLib;
 import com.flora30.divelib.ItemMain;
 import com.flora30.divelib.data.player.NpcData;

@@ -1,7 +1,7 @@
 package com.flora30.divequest.mission;
 
 
-import com.flora30.diveconstant.data.talk.Talk;
+import com.flora30.divelib.data.talk.Talk;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -6,6 +6,7 @@
 
 plugins {
     id 'java-library'
+    id("com.github.johnrengelman.shadow") version "8.1.1"
     id 'maven-publish'
 }
 
@@ -34,6 +35,10 @@ repositories {
     maven {
         url = uri('https://repo.maven.apache.org/maven2/')
     }
+    maven {
+        name = "dive"
+        url = "https://repo.azisaba.net/repository/maven-public/"
+    }
 }
 
 dependencies {
@@ -41,6 +46,7 @@ dependencies {
     compileOnly 'net.citizensnpcs:citizensapi:2.0.28-SNAPSHOT'
     compileOnly 'io.lumine:Mythic-Dist:5.0.0-SNAPSHOT'
     compileOnly 'com.comphenix.protocol:ProtocolLib:4.7.0'
+    compileOnly "com.flora30:DiveLib:0.1.0-SNAPSHOT"
 
     compileOnly fileTree('libs')
 }

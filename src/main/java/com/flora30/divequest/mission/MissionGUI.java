@@ -1,7 +1,7 @@
 package com.flora30.divequest.mission;
 
-import com.flora30.diveconstant.data.LayerObject;
-import com.flora30.diveconstant.data.Story;
+import com.flora30.divelib.data.LayerObject;
+import com.flora30.divelib.data.Story;
 import com.flora30.divelib.ItemMain;
 import com.flora30.divelib.data.player.NpcData;
 import com.flora30.divelib.data.player.PlayerData;
